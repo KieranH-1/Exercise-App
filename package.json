@@ -1,0 +1,14 @@
+{
+  "name": "Exervise-App",
+  "version": "1.0.0",
+  "description": "A simple exercise app",
+  "private": true,
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "dayjs":"^1.11.13"
+  }
+}
