@@ -2,8 +2,7 @@
 
 <template>
   <div>
-    <p>Username: {{ $route.params.username }}</p>
-    <p>Email: {{ $route.params.email }}</p>
+    <h1 class="title product">Products Makeup</h1>
   </div>
 </template>
 

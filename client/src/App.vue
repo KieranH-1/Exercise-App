@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import NavBar from "./components/NavBar.vue";
+import { RouterView } from 'vue-router'
+import NavBar from './components/NavBar.vue'
 </script>
 
 <template>
@@ -8,13 +8,9 @@ import NavBar from "./components/NavBar.vue";
     <NavBar />
   </header>
 
-  <main class="container">
+  <div class="container body-content">
     <RouterView />
-
-    <div class="columns">
-      <div class="column"></div>
-    </div>
-  </main>
+  </div>
 </template>
 
 <style scoped>
