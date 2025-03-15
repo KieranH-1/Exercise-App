@@ -6,8 +6,6 @@
       "description": "A basic exercise for strengthening the upper body.",
       "type": "strength",
       "muscle_group": "chest",
-      "equipment_needed": false,
-      "difficulty_level": 2,
       "image_url": "https://example.com/pushup.jpg"
     },
     {
@@ -16,18 +14,14 @@
       "description": "A fundamental exercise for building lower body strength.",
       "type": "strength",
       "muscle_group": "legs",
-      "equipment_needed": false,
-      "difficulty_level": 2,
       "image_url": "https://example.com/squat.jpg"
     },
     {
       "id": 3,
       "name": "Plank",
       "description": "An isometric core strengthening exercise.",
-      "type": "endurance",
+      "type": "strength",
       "muscle_group": "core",
-      "equipment_needed": false,
-      "difficulty_level": 3,
       "image_url": null
     },
     {
