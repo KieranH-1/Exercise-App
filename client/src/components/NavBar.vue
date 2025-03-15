@@ -1,7 +1,44 @@
+<!-- eslint-disable vue/no-export-in-script-setup -->
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
+
+const emit = defineEmits(['select-profile'])
 
 const isActive = ref(false)
+const toggleLogin = ref(false)
+const kieranProfile = ref(false)
+const coolGuyProfile = ref(false)
+const buffGuyProfile = ref(false)
+
+const selectProfile = (profile) => {
+  emit('select-profile', profile)
+
+  if (profile === 'Kieran') {
+    kieranProfile.value = true
+    coolGuyProfile.value = false
+    buffGuyProfile.value = false
+  } else if (profile === 'Cool Guy') {
+    kieranProfile.value = false
+    coolGuyProfile.value = true
+    buffGuyProfile.value = false
+  } else if (profile === 'Buff Guy') {
+    kieranProfile.value = false
+    coolGuyProfile.value = false
+    buffGuyProfile.value = true
+  }
+  toggleLogin.value = false
+}
+
+const getProfile = () => {
+  if (kieranProfile.value) {
+    return 'Kieran'
+  } else if (coolGuyProfile.value) {
+    return 'Cool Guy'
+  } else if (buffGuyProfile.value) {
+    return 'Buff Guy'
+  }
+  return null
+}
 </script>
 
 <template>
@@ -43,21 +80,9 @@ const isActive = ref(false)
 
       <div class="navbar-menu" :class="{ 'is-active': isActive }">
         <div class="navbar-start">
-          <RouterLink to="/" class="navbar-item">Home</RouterLink>
-          <RouterLink to="/about" class="navbar-item">About</RouterLink>
-          <RouterLink to="/products" class="navbar-item">Products</RouterLink>
-
-          <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link"> More </a>
-
-            <div class="navbar-dropdown">
-              <a class="navbar-item"> About </a>
-              <a class="navbar-item is-selected"> Jobs </a>
-              <a class="navbar-item"> Contact </a>
-              <hr class="navbar-divider" />
-              <a class="navbar-item"> Report an issue </a>
-            </div>
-          </div>
+          <RouterLink to="/" class="navbar-item">My Activity</RouterLink>
+          <RouterLink to="/friends" class="navbar-item">Friends</RouterLink>
+          <RouterLink to="/about" class="navbar-item">Stats</RouterLink>
         </div>
 
         <div class="navbar-end">
@@ -66,7 +91,25 @@ const isActive = ref(false)
               <a class="button is-primary">
                 <strong>Sign up</strong>
               </a>
-              <a class="button is-light"> Log in </a>
+              <div class="dropdown is-right" :class="{ 'is-active': toggleLogin }">
+                <div class="dropdown-trigger">
+                  <button class="button is-light" @click="toggleLogin = !toggleLogin">
+                    Log in
+                    <span class="icon is- is-right">
+                      <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    </span>
+                  </button>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu2" role="menu">
+                  <div class="dropdown-content">
+                    <a class="dropdown-item" @click="selectProfile('Kieran')">Kieran</a>
+                    <a class="dropdown-item" @click="selectProfile('Cool Guy')">Cool Guy</a>
+                    <a class="dropdown-item" @click="selectProfile('Buff Guy')">Buff Guy</a>
+                    <hr class="dropdown-divider" />
+                    <RouterLink to="/login" class="navbar-item">Other Account</RouterLink>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

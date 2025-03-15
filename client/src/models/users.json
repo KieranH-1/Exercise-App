@@ -1,0 +1,36 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john.doe@example",
+      "password": "password123",
+      "profile_picture": "https://randomuser.me/api"
+    },
+    {
+      "id": 2,
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "email": "jane.doe@example",
+      "password": "password123",
+      "profile_picture": "https://randomuser.me/api"
+    },
+    {
+      "id": 3,
+      "first_name": "Alice",
+      "last_name": "Smith",
+      "email": "alice.smith@example",
+      "password": "password123",
+      "profile_picture": "https://randomuser.me/api"
+    },
+    {
+      "id": 4,
+      "first_name": "Bob",
+      "last_name": "Johnson",
+      "email": "bob.johnson@example",
+      "password": "password123",
+      "profile_picture": "https://randomuser.me/api"
+    }
+  ]
+}

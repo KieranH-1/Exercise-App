@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "name": "Push-up",
+      "description": "A basic exercise for strengthening the upper body.",
+      "type": "strength",
+      "muscle_group": "chest",
+      "equipment_needed": false,
+      "difficulty_level": 2,
+      "image_url": "https://example.com/pushup.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Squat",
+      "description": "A fundamental exercise for building lower body strength.",
+      "type": "strength",
+      "muscle_group": "legs",
+      "equipment_needed": false,
+      "difficulty_level": 2,
+      "image_url": "https://example.com/squat.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Plank",
+      "description": "An isometric core strengthening exercise.",
+      "type": "endurance",
+      "muscle_group": "core",
+      "equipment_needed": false,
+      "difficulty_level": 3,
+      "image_url": null
+    },
+    {
+      "id": 4,
+      "name": null,
+      "description": null,
+      "type": null,
+      "muscle_group": null,
+      "equipment_needed": null,
+      "difficulty_level": null,
+      "image_url": null
+    }
+  ]
+}

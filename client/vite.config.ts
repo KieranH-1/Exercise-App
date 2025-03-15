@@ -13,7 +13,7 @@ export default defineConfig({
       /*
     options*/
     }),
-    Vue(),
+    vue(),
     vueJsx(),
     vueDevTools(),
   ],
