@@ -1,51 +1,23 @@
 <!-- eslint-disable vue/no-export-in-script-setup -->
 <script setup lang="ts">
+import { refUser, setUser } from '@/models/users'
 import { ref, defineEmits } from 'vue'
 
 const emit = defineEmits(['select-profile'])
 
 const isActive = ref(false)
 const toggleLogin = ref(false)
-const kieranProfile = ref(false)
-const coolGuyProfile = ref(false)
-const buffGuyProfile = ref(false)
 
-const selectProfile = (profile) => {
-  emit('select-profile', profile)
+// Add user data
+const user = refUser()
 
-  if (profile === 'Kieran') {
-    kieranProfile.value = true
-    coolGuyProfile.value = false
-    buffGuyProfile.value = false
-  } else if (profile === 'Cool Guy') {
-    kieranProfile.value = false
-    coolGuyProfile.value = true
-    buffGuyProfile.value = false
-  } else if (profile === 'Buff Guy') {
-    kieranProfile.value = false
-    coolGuyProfile.value = false
-    buffGuyProfile.value = true
-  }
-  toggleLogin.value = false
-}
-
-const getProfile = () => {
-  if (kieranProfile.value) {
-    return 'Kieran'
-  } else if (coolGuyProfile.value) {
-    return 'Cool Guy'
-  } else if (buffGuyProfile.value) {
-    return 'Buff Guy'
-  }
-  return null
-}
 </script>
 
 <template>
   <nav class="navbar is-info" role="navigation" aria-label="main navigation">
     <div class="container">
       <div class="navbar-brand">
-        <a class="navbar-item" href="https://bulma.io">
+        <RouterLink to="/stats" class="navbar-item">
           <svg width="640" height="160" viewBox="0 0 640 160" fill="none" src="@/assets/logo.svg">
             <path
               fill-rule="evenodd"
@@ -61,7 +33,7 @@ const getProfile = () => {
               fill="#00D1B2"
             />
           </svg>
-        </a>
+        </RouterLink>
 
         <a
           role="button"
@@ -80,21 +52,28 @@ const getProfile = () => {
 
       <div class="navbar-menu" :class="{ 'is-active': isActive }">
         <div class="navbar-start">
-          <RouterLink to="/" class="navbar-item">My Activity</RouterLink>
-          <RouterLink to="/friends" class="navbar-item">Friends</RouterLink>
-          <RouterLink to="/about" class="navbar-item">Stats</RouterLink>
+          <RouterLink to="/" class="navbar-item"> <span class="icon is-small"><i class="fas fa-dumbbell"></i></span>
+            My Activity</RouterLink>
+          <RouterLink to="/friends" class="navbar-item"><span class="icon is-small"><i class="fas fa-users"></i></span>Friends</RouterLink>
         </div>
 
         <div class="navbar-end">
+          <!-- Move user profile display here -->
+          <div class="navbar-item" v-if="user">
+            <figure class="image is-32x32">
+              <img class="is-rounded" :src="user?.profile_picture" alt="Profile Picture">
+            </figure>
+            <span>{{ user?.username }}</span>
+          </div>
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">
+              <a v-if="!user" class="button is-primary">
                 <strong>Sign up</strong>
               </a>
               <div class="dropdown is-right" :class="{ 'is-active': toggleLogin }">
                 <div class="dropdown-trigger">
                   <button class="button is-light" @click="toggleLogin = !toggleLogin">
-                    Log in
+                    <span>Log in</span>
                     <span class="icon is- is-right">
                       <i class="fas fa-angle-down" aria-hidden="true"></i>
                     </span>
@@ -102,15 +81,21 @@ const getProfile = () => {
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu2" role="menu">
                   <div class="dropdown-content">
-                    <a class="dropdown-item" @click="selectProfile('Kieran')">Kieran</a>
-                    <a class="dropdown-item" @click="selectProfile('Cool Guy')">Cool Guy</a>
-                    <a class="dropdown-item" @click="selectProfile('Buff Guy')">Buff Guy</a>
+                    <a class="dropdown-item" @click="setUser(1); toggleLogin = !toggleLogin">johnny_runner</a>
+                    <a class="dropdown-item" @click="setUser(2); toggleLogin = !toggleLogin">jane_yogi</a>
+                    <a class="dropdown-item" @click="setUser(3); toggleLogin = !toggleLogin">alice_fitness</a>
                     <hr class="dropdown-divider" />
                     <RouterLink to="/login" class="navbar-item">Other Account</RouterLink>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+          <!-- Add admin button -->
+          <div class="navbar-item" v-if="user?.admin">
+            <RouterLink to="/admin" class="button is-danger">
+              Admin
+            </RouterLink>
           </div>
         </div>
       </div>
