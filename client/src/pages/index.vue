@@ -64,7 +64,10 @@ const deletePost = (index: number) => {
           <div><p>DURATION</p><h1>{{ post.duration }} minutes</h1></div>
           <div v-if="post.sets"><p>SETS</p><h1>{{ post.sets }}</h1></div>
           <div v-if="post.reps"><p>REPS</p><h1>{{ post.reps }}</h1></div>
-          <img :src="post.image ?? ''" alt="Post Image" />
+          <figure>
+            <img :src="post.image ?? ''" alt="Post Image" />
+          </figure>
+
         </div>
       </div>
       <nav class="level is-mobile">
