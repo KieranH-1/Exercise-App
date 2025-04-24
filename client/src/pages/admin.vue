@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { getAllUsers } from '@/models/users'
 
 const users = getAllUsers()
-
 </script>
 
 <template>
@@ -21,7 +20,7 @@ const users = getAllUsers()
       </thead>
       <tbody>
         <tr v-for="user in users" :key="user.id">
-            <td>{{ user.username }}</td>
+          <td>{{ user.username }}</td>
           <td>{{ user.name.first }}</td>
           <td>{{ user.name.last }}</td>
           <td>{{ user.email }}</td>
