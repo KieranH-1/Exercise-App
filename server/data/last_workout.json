@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "user_id": 1,
+      "name": "Push-ups",
+      "reps": 15,
+      "sets": 3,
+      "date": "2023-10-01"
+    },
+    {
+      "user_id": 2,
+      "name": "Squats",
+      "reps": 20,
+      "sets": 3,
+      "date": "2023-10-01"
+    },
+    {
+      "user_id": 3,
+      "name": "Deadlifts",
+      "reps": 10,
+      "sets": 3,
+      "date": "2023-10-01"
+    }
+  ]
+}

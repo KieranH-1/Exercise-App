@@ -4,7 +4,7 @@
 const express = require("express");
 const postsController = require("./controllers/posts");
 const usersController = require("./controllers/users");
-const exercisesController = require("./controllers/exercises");
+const exercisesController = require("./controllers/last_workout");
 require("dotenv").config();
 
 const PORT = process.env.PORT ?? 8000;
@@ -26,7 +26,7 @@ app.use(express.json());
 //Controllers
 app
   //.use("/api/v1/products", postsController)
-  //.use("/api/v1/users", usersController)
+  .use("/api/v1/users", usersController)
   //.use("/api/v1/exercises", exercisesController)
 
   .use("/", express.static("dist"));

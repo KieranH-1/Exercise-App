@@ -1,8 +1,6 @@
-import type { Exercise } from "./exercises"
-import type { Post } from "./post"
-import users from "../data/users.json"
-import exercises from "../data/exercises.json"
-import { ref } from "vue"
+import type { Exercise } from './exercises'
+import type { Post } from './post'
+import { ref } from 'vue'
 
 export interface User {
   id: number
@@ -15,11 +13,11 @@ export interface User {
   password: string
   profile_picture: string
   lastWorkout: {
-    "name": string,
-    "duration": number,
-    "sets": number,
-    "reps": number,
-    "timestamp": string
+    name: string
+    duration: number
+    sets: number
+    reps: number
+    timestamp: string
   }
   posts: Post[]
   admin: boolean
