@@ -2,24 +2,24 @@
   "items": [
     {
       "user_id": 1,
-      "name": "Push-ups",
+      "exercise": "Push-ups",
+      "duration": 30,
       "reps": 15,
-      "sets": 3,
-      "date": "2023-10-01"
+      "sets": 3
     },
     {
       "user_id": 2,
-      "name": "Squats",
+      "exercise": "Squats",
+      "duration": 45,
       "reps": 20,
-      "sets": 3,
-      "date": "2023-10-01"
+      "sets": 3
     },
     {
       "user_id": 3,
-      "name": "Deadlifts",
+      "exercise": "Deadlifts",
+      "duration": 60,
       "reps": 10,
-      "sets": 3,
-      "date": "2023-10-01"
+      "sets": 3
     }
   ]
 }

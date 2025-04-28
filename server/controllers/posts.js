@@ -33,32 +33,11 @@ router
       })
       .catch(next);
   })
-  .patch("/:id", (req, res, next) => {
-    const { id } = req.params;
-    const newValues = req.body;
-
-    model
-      .update(id, newValues)
-      .then((data) => {
-        res.send(data);
-      })
-      .catch(next);
-  })
   .delete("/:id", (req, res, next) => {
     const { id } = req.params;
 
     model
       .remove(id)
-      .then((data) => {
-        res.send(data);
-      })
-      .catch(next);
-  })
-  .get("/search/:query", (req, res, next) => {
-    const { query } = req.params;
-    const { limit, offset, sort, order } = req.query;
-    model
-      .search(query, num(limit), num(offset), sort, order)
       .then((data) => {
         res.send(data);
       })

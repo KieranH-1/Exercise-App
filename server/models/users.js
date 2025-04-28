@@ -1,5 +1,3 @@
-/*  B"H
- */
 
 const data = require("../data/users.json");
 const { CustomError, statusCodes } = require("./errors");
@@ -7,12 +5,12 @@ const { connect } = require("./supabase");
 
 const TABLE_NAME = "users";
 
-const BaseQuery = () => connect().from(TABLE_NAME);
-//.select('*')
+const BaseQuery = () => connect().from(TABLE_NAME).select('*');
+
 
 const isAdmin = true;
 
-async function getAll(limit = 30, offset = 0, sort = "id", order = "desc") {
+async function getAll(limit = 30, offset = 0, sort = "user_id", order = "asc") {
   const list = await BaseQuery()
     .order(sort, { ascending: order === "asc" })
     .range(offset, offset + limit - 1); // 0 based index but range is inclusive
@@ -26,7 +24,8 @@ async function getAll(limit = 30, offset = 0, sort = "id", order = "desc") {
 }
 
 async function get(id) {
-  const { data: item, error } = await connect().from(TABLE_NAME).eq("id", id);
+  const { data: item, error } = await connect().from(TABLE_NAME).select('*').eq("user_id", id);
+  console.log(item);
   if (!item.length) {
     throw new CustomError("Item not found", statusCodes.NOT_FOUND);
   }
@@ -40,7 +39,7 @@ async function search(
   query,
   limit = 30,
   offset = 0,
-  sort = "id",
+  sort = "user_id",
   order = "desc"
 ) {
   const {
@@ -49,7 +48,7 @@ async function search(
     count,
   } = await BaseQuery()
     .or(
-      `first.ilike.%${query}%,last.ilike.%${query}%,email.ilike.%${query}%,username.ilike.%${query}%`
+      `first_name.ilike.%${query}%,last_name.ilike.%${query}%,email.ilike.%${query}%,username.ilike.%${query}%`
     )
     .order(sort, { ascending: order === "asc" })
     .range(offset, offset + limit - 1);
@@ -89,7 +88,7 @@ async function update(id, item) {
   const { data: updatedItem, error } = await connect()
     .from(TABLE_NAME)
     .update(item)
-    .eq("id", id)
+    .eq("user_id", id)
     .select("*");
   if (error) {
     throw error;
@@ -107,7 +106,7 @@ async function remove(id) {
   const { data: deletedItem, error } = await connect()
     .from(TABLE_NAME)
     .delete()
-    .eq("id", id);
+    .eq("post_id", id);
   if (error) {
     throw error;
   }

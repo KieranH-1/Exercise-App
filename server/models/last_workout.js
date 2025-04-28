@@ -1,73 +1,22 @@
-/*  B"H
- */
 
-const data = require("../data/users.json");
+const data = require("../data/last_workout.json");
 const { CustomError, statusCodes } = require("./errors");
 const { connect } = require("./supabase");
 
-const TABLE_NAME = "users";
-
-const BaseQuery = () =>
-  connect()
-    .from(TABLE_NAME)
-    .select("*, product_reviews(average_rating:rating.avg())", {
-      count: "estimated",
-    });
-//.select('*')
+const TABLE_NAME = "last_workout";
 
 const isAdmin = true;
 
-async function getAll(limit = 30, offset = 0, sort = "id", order = "desc") {
-  const list = await BaseQuery()
-    .order(sort, { ascending: order === "asc" })
-    .range(offset, offset + limit - 1); // 0 based index but range is inclusive
-  if (list.error) {
-    throw list.error;
-  }
-  return {
-    items: list.data,
-    total: list.count,
-  };
-}
-
 async function get(id) {
-  const { data: item, error } = await connect()
-    .from(TABLE_NAME)
-    .select("*, product_reviews(*)")
-    .eq("id", id);
+  const { data: item, error } = await connect().from(TABLE_NAME).select('*').eq("user_id", id);
+  console.log(item);
   if (!item.length) {
     throw new CustomError("Item not found", statusCodes.NOT_FOUND);
   }
   if (error) {
     throw error;
   }
-  return item[0];
-}
-
-async function search(
-  query,
-  limit = 30,
-  offset = 0,
-  sort = "id",
-  order = "desc"
-) {
-  const {
-    data: items,
-    error,
-    count,
-  } = await BaseQuery()
-    .or(
-      `firstName.ilike.%${query}%,lastName.ilike.%${query}%,email.ilike.%${query}%,phone.ilike.%${query}%`
-    )
-    .order(sort, { ascending: order === "asc" })
-    .range(offset, offset + limit - 1);
-  if (error) {
-    throw error;
-  }
-  return {
-    items,
-    total: count,
-  };
+  return item;
 }
 
 async function create(item) {
@@ -97,29 +46,12 @@ async function update(id, item) {
   const { data: updatedItem, error } = await connect()
     .from(TABLE_NAME)
     .update(item)
-    .eq("id", id)
+    .eq("user_id", id)
     .select("*");
   if (error) {
     throw error;
   }
   return updatedItem;
-}
-
-async function remove(id) {
-  if (!isAdmin) {
-    throw CustomError(
-      "Sorry, you are not authorized to delete this item",
-      statusCodes.UNAUTHORIZED
-    );
-  }
-  const { data: deletedItem, error } = await connect()
-    .from(TABLE_NAME)
-    .delete()
-    .eq("id", id);
-  if (error) {
-    throw error;
-  }
-  return deletedItem;
 }
 
 async function seed() {
@@ -138,26 +70,20 @@ async function seed() {
 
 function mapToDB(item) {
   return {
-    //id: item.id,
-    firstName: item.firstName,
-    lastName: item.lastName,
-    email: item.email,
-    phone: item.phone,
-    age: item.age,
-    gender: item.gender,
-    birthDate: item.birthDate,
-    image: item.image,
-    university: item.university,
-    role: item.role,
+    user_id: item.user_id,
+    description: item.description,
+    exercise: item.exercise,
+    equipment: item.equipment,
+    duration: item.duration,
+    sets: item.sets,
+    reps: item.reps,
+    image: item.image
   };
 }
 
 module.exports = {
-  getAll,
   get,
-  search,
-  create,
   update,
-  remove,
+  create,
   seed,
 };

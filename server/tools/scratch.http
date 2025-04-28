@@ -1,5 +1,71 @@
+########################
+# Users Controller
+########################
+
 ###
 POST http://localhost:4000/api/v1/users/seed
 
 ###
 GET http://localhost:4000/api/v1/users/
+
+###
+GET http://localhost:4000/api/v1/users/1
+
+###
+GET http://localhost:4000/api/v1/users/search/Jane?limit=10&sort=first_name&order=asc
+
+###
+PATCH http://localhost:4000/api/v1/users/1
+Content-Type: application/json
+
+{
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "email": "jane.doe@email.com",
+    "password": "password123"
+}
+
+########################
+# Posts Controller
+########################
+
+###
+POST http://localhost:4000/api/v1/posts/seed
+
+###
+GET http://localhost:4000/api/v1/posts/
+
+###
+GET http://localhost:4000/api/v1/posts/1
+
+###
+DELETE http://localhost:4000/api/v1/posts/4
+
+###
+POST http://localhost:4000/api/v1/posts/
+Content-Type: application/json
+
+{
+    "description": "New Post",
+    "duration": 8,
+    "user_id": 1,
+    "exercise": "Running"
+}
+
+########################
+# Last Workout Controller
+########################
+
+###
+POST http://localhost:4000/api/v1/last_workout/seed
+
+###
+PATCH http://localhost:4000/api/v1/last_workout/2
+Content-Type: application/json
+
+{
+    "exercise": "Bench Press",
+    "duration": 40,
+    "sets": 4,
+    "reps": 5
+}
