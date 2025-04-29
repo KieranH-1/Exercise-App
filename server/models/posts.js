@@ -1,15 +1,19 @@
-
 const data = require("../data/posts.json");
 const { CustomError, statusCodes } = require("./errors");
 const { connect } = require("./supabase");
 
 const TABLE_NAME = "posts";
 
-const BaseQuery = () => connect().from(TABLE_NAME).select('*');
+const BaseQuery = () => connect().from(TABLE_NAME).select("*");
 
 const isAdmin = true;
 
-async function getAll(limit = 30, offset = 0, sort = "created_at", order = "asc") {
+async function getAll(
+  limit = 30,
+  offset = 0,
+  sort = "created_at",
+  order = "asc"
+) {
   const list = await BaseQuery()
     .order(sort, { ascending: order === "asc" })
     .range(offset, offset + limit - 1); // 0 based index but range is inclusive
@@ -23,7 +27,10 @@ async function getAll(limit = 30, offset = 0, sort = "created_at", order = "asc"
 }
 
 async function get(id) {
-  const { data: item, error } = await connect().from(TABLE_NAME).select('*').eq("user_id", id);
+  const { data: item, error } = await connect()
+    .from(TABLE_NAME)
+    .select("*")
+    .eq("user_id", id);
   if (!item.length) {
     throw new CustomError("Item not found", statusCodes.NOT_FOUND);
   }
@@ -68,8 +75,13 @@ async function remove(id) {
 }
 
 async function seed() {
+  const { data: users } = await connect().from("users").select("*");
+
   for (const item of data.items) {
-    const insert = mapToDB(item);
+    const randomIndex = Math.floor(Math.random() * users.length);
+    const randomUser = users[randomIndex];
+
+    const insert = mapToDB(item, randomUser);
     const { data: newItem, error } = await connect()
       .from(TABLE_NAME)
       .insert(insert)
@@ -81,16 +93,18 @@ async function seed() {
   return { message: "Seeded successfully" };
 }
 
-function mapToDB(item) {
+function mapToDB(item, user) {
   return {
-    user_id: item.user_id,
+    user_id: user.id,
     description: item.description,
     exercise: item.exercise,
     equipment: item.equipment,
     duration: item.duration,
     sets: item.sets,
     reps: item.reps,
-    image: item.image
+    image: item.image,
+    email: user.email,
+    username: user.username,
   };
 }
 

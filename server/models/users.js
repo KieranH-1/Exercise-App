@@ -1,12 +1,10 @@
-
 const data = require("../data/users.json");
 const { CustomError, statusCodes } = require("./errors");
 const { connect } = require("./supabase");
 
 const TABLE_NAME = "users";
 
-const BaseQuery = () => connect().from(TABLE_NAME).select('*');
-
+const BaseQuery = () => connect().from(TABLE_NAME).select("*");
 
 const isAdmin = true;
 
@@ -24,8 +22,10 @@ async function getAll(limit = 30, offset = 0, sort = "user_id", order = "asc") {
 }
 
 async function get(id) {
-  const { data: item, error } = await connect().from(TABLE_NAME).select('*').eq("user_id", id);
-  console.log(item);
+  const { data: item, error } = await connect()
+    .from(TABLE_NAME)
+    .select("*")
+    .eq("user_id", id);
   if (!item.length) {
     throw new CustomError("Item not found", statusCodes.NOT_FOUND);
   }

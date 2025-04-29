@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { addPost, refPost, type Post } from '@/models/post'
+import { addPost, refPost, type Post } from '@/models/posts'
 
 const newPost = refPost()
-
 
 const resetForm = () => {
   newPost.value = {
@@ -14,7 +13,7 @@ const resetForm = () => {
     reps: 0,
     description: '',
     timestamp: new Date().toISOString(),
-    image: ''
+    image: '',
   }
 }
 
@@ -75,7 +74,9 @@ const submitForm = () => {
         <button class="button is-link" type="submit" @click="addPost(newPost)">Submit</button>
       </div>
       <div class="control">
-        <button class="button is-link is-light" type="button" @click="emit('cancel')">Cancel</button>
+        <button class="button is-link is-light" type="button" @click="emit('cancel')">
+          Cancel
+        </button>
       </div>
     </div>
   </form>

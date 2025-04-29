@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { addPost as addPostToStore, refPost, type Post } from '@/models/post'
+import { addPost as addPostToStore, refPost, type Post } from '@/models/posts'
 import { refUser } from '@/models/users'
 import PostForm from '../components/PostForm.vue' // Import the PostForm component
 
@@ -37,66 +37,82 @@ const deletePost = (index: number) => {
           <button class="delete" aria-label="close" @click="showForm = false"></button>
         </header>
         <section class="modal-card-body">
-          <PostForm @submit="addPost(newPost)" @cancel="showForm = false" /> <!-- Use the PostForm component -->
+          <PostForm @submit="addPost(newPost)" @cancel="showForm = false" />
+          <!-- Use the PostForm component -->
         </section>
       </div>
     </div>
     <ul>
       <li v-for="(post, index) in posts" :key="index">
         <div class="box">
-  <article class="media">
-    <div class="media-left">
-      <figure class="image is-64x64 is-square">
-        <img class="is-rounded" :src="user?.profile_picture" alt="Profile Picture" />
-      </figure>
-    </div>
-    <div class="media-content">
-      <div class="content">
-        <p>
-          <strong v-if="user">{{ user.name.first }} &nbsp; {{ user.name.last }}</strong> &nbsp; <small v-if="user">@{{ user.email }}</small> &nbsp;
-          <small>{{ post.timestamp }}</small>
-          <br>
-        </p>
-        <h4>{{ post.description }}</h4>
-        <div class="post-details">
-          <div><p>EXERCISE</p><h1>{{ post.exercise }}</h1></div>
-          <div><p>EQUIPMENT</p><h1>{{ post.equipment }}</h1></div>
-          <div><p>DURATION</p><h1>{{ post.duration }} minutes</h1></div>
-          <div v-if="post.sets"><p>SETS</p><h1>{{ post.sets }}</h1></div>
-          <div v-if="post.reps"><p>REPS</p><h1>{{ post.reps }}</h1></div>
-          <figure>
-            <img :src="post.image ?? ''" alt="Post Image" />
-          </figure>
-
+          <article class="media">
+            <div class="media-left">
+              <figure class="image is-64x64 is-square">
+                <img class="is-rounded" :src="user?.profile_picture" alt="Profile Picture" />
+              </figure>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <p>
+                  <strong v-if="user">{{ user.name.first }} &nbsp; {{ user.name.last }}</strong>
+                  &nbsp; <small v-if="user">@{{ user.email }}</small> &nbsp;
+                  <small>{{ post.timestamp }}</small>
+                  <br />
+                </p>
+                <h4>{{ post.description }}</h4>
+                <div class="post-details">
+                  <div>
+                    <p>EXERCISE</p>
+                    <h1>{{ post.exercise }}</h1>
+                  </div>
+                  <div>
+                    <p>EQUIPMENT</p>
+                    <h1>{{ post.equipment }}</h1>
+                  </div>
+                  <div>
+                    <p>DURATION</p>
+                    <h1>{{ post.duration }} minutes</h1>
+                  </div>
+                  <div v-if="post.sets">
+                    <p>SETS</p>
+                    <h1>{{ post.sets }}</h1>
+                  </div>
+                  <div v-if="post.reps">
+                    <p>REPS</p>
+                    <h1>{{ post.reps }}</h1>
+                  </div>
+                  <figure>
+                    <img :src="post.image ?? ''" alt="Post Image" />
+                  </figure>
+                </div>
+              </div>
+              <nav class="level is-mobile">
+                <div class="level-left">
+                  <a class="level-item" aria-label="reply">
+                    <span class="icon is-small">
+                      <i class="fas fa-reply" aria-hidden="true"></i>
+                    </span>
+                  </a>
+                  <a class="level-item" aria-label="retweet">
+                    <span class="icon is-small">
+                      <i class="fas fa-retweet" aria-hidden="true"></i>
+                    </span>
+                  </a>
+                  <a class="level-item" aria-label="like">
+                    <span class="icon is-small">
+                      <i class="fas fa-heart" aria-hidden="true"></i>
+                    </span>
+                  </a>
+                  <a class="level-item" aria-label="delete" @click="deletePost(index)">
+                    <span class="icon is-small">
+                      <i class="fas fa-trash" aria-hidden="true"></i>
+                    </span>
+                  </a>
+                </div>
+              </nav>
+            </div>
+          </article>
         </div>
-      </div>
-      <nav class="level is-mobile">
-        <div class="level-left">
-          <a class="level-item" aria-label="reply">
-            <span class="icon is-small">
-              <i class="fas fa-reply" aria-hidden="true"></i>
-            </span>
-          </a>
-          <a class="level-item" aria-label="retweet">
-            <span class="icon is-small">
-              <i class="fas fa-retweet" aria-hidden="true"></i>
-            </span>
-          </a>
-          <a class="level-item" aria-label="like">
-            <span class="icon is-small">
-              <i class="fas fa-heart" aria-hidden="true"></i>
-            </span>
-          </a>
-          <a class="level-item" aria-label="delete" @click="deletePost(index)">
-            <span class="icon is-small">
-              <i class="fas fa-trash" aria-hidden="true"></i>
-            </span>
-          </a>
-        </div>
-      </nav>
-    </div>
-  </article>
-</div>
       </li>
     </ul>
   </div>
@@ -120,7 +136,7 @@ const deletePost = (index: number) => {
   margin-top: 0;
 }
 
-.post-details p{
+.post-details p {
   margin-bottom: 3px;
 }
 .post-details {
