@@ -1,20 +1,31 @@
-<script setup lang="ts">
-import { refUser } from '@/models/users';
-
-const user = refUser()
-</script>
+<script setup lang="ts"></script>
 <template>
   <div class="stats">
     <h1 class="title is-3"><b>Last Workout</b></h1>
 
     <div class="box">
       <div class="workout-details">
-          <div class="workout-item"><p>EXERCISE</p><h1>{{ user?.lastWorkout.name }}</h1></div>
-          <div class="workout-item"><p>DURATION</p><h1>{{ user?.lastWorkout.duration }} minutes</h1></div>
-          <div v-if="user?.lastWorkout.sets" class="workout-item"><p>SETS</p><h1>{{ user?.lastWorkout.sets }}</h1></div>
-          <div v-if="user?.lastWorkout.reps" class="workout-item"><p>REPS</p><h1>{{ user?.lastWorkout.reps }}</h1></div>
-          <div class="workout-item"><p>DATE</p><h1>{{ user?.lastWorkout.timestamp }}</h1></div>
+        <div class="workout-item">
+          <p>EXERCISE</p>
+          <h1>{{ user?.lastWorkout.name }}</h1>
         </div>
+        <div class="workout-item">
+          <p>DURATION</p>
+          <h1>{{ user?.lastWorkout.duration }} minutes</h1>
+        </div>
+        <div v-if="user?.lastWorkout.sets" class="workout-item">
+          <p>SETS</p>
+          <h1>{{ user?.lastWorkout.sets }}</h1>
+        </div>
+        <div v-if="user?.lastWorkout.reps" class="workout-item">
+          <p>REPS</p>
+          <h1>{{ user?.lastWorkout.reps }}</h1>
+        </div>
+        <div class="workout-item">
+          <p>DATE</p>
+          <h1>{{ user?.lastWorkout.timestamp }}</h1>
+        </div>
+      </div>
     </div>
   </div>
 </template>

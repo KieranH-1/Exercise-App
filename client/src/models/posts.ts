@@ -18,6 +18,6 @@ export function get(id: number): Promise<Post> {
   return api(`posts/${id}`)
 }
 
-export function getAllPosts(): Promise<DataListEnvelope<Post>> {
+export function getAll(): Promise<DataListEnvelope<Post>> {
   return api('posts')
 }

@@ -1,27 +1,69 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { addPost as addPostToStore, refPost, type Post } from '@/models/posts'
-import { refUser } from '@/models/users'
+import { getAll, type Post } from '@/models/posts'
+import { type DataListEnvelope } from '@/models/dataEnvelopes'
 import PostForm from '../components/PostForm.vue' // Import the PostForm component
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { useRoute } from 'vue-router'
+import { refSession } from '@/models/session'
+
+dayjs.extend(relativeTime)
 
 const showForm = ref(false)
-const newPost = refPost()
-const user = refUser()
-let posts = ref(user.value?.posts || [])
-const addPost = (postData: Post) => {
-  addPostToStore(postData)
-  posts.value.unshift(postData) // Add new post to the top of the list
-  if (user.value) {
-    user.value.posts = posts.value // Update user's posts
+
+const route = useRoute('/posts/[id]')
+const posts = ref({} as DataListEnvelope<Post>)
+
+const newPost = ref<Partial<Post>>({
+  description: '',
+  exercise: '',
+  equipment: '',
+  duration: 0,
+  sets: 0,
+  reps: 0,
+  image: '',
+})
+
+const session = refSession()
+
+getAll().then((response) => {
+  posts.value = response
+})
+
+async function SubmitPost() {
+  const curUser = session.value.user
+
+  if (!curUser) {
+    return
   }
-  showForm.value = false // Close the form after submission
+
+  const post = {
+    ...newPost.value,
+    user: curUser,
+    created_at: new Date().toLocaleDateString(),
+    username: curUser.username,
+    profile_picture: curUser.profile_picture,
+    email: curUser.email,
+  } as Post
+
+  newPost.value = {
+    description: '',
+    exercise: '',
+    equipment: '',
+    duration: 0,
+    sets: 0,
+    reps: 0,
+    image: '',
+  }
 }
 
-const deletePost = (index: number) => {
-  posts.value.splice(index, 1)
-  if (user.value) {
-    user.value.posts = posts.value // Update user's posts
-  }
+async function DeletePost(index: number) {
+  const post_id = posts.value.items[index].id
+  await fetch(`http://localhost:3000/posts/${post_id}`, {
+    method: 'DELETE',
+  })
+  posts.value.items.splice(index, 1)
 }
 </script>
 
@@ -37,7 +79,7 @@ const deletePost = (index: number) => {
           <button class="delete" aria-label="close" @click="showForm = false"></button>
         </header>
         <section class="modal-card-body">
-          <PostForm @submit="addPost(newPost)" @cancel="showForm = false" />
+          <PostForm @submit="Post(newPost)" @cancel="showForm = false" />
           <!-- Use the PostForm component -->
         </section>
       </div>
@@ -103,7 +145,7 @@ const deletePost = (index: number) => {
                       <i class="fas fa-heart" aria-hidden="true"></i>
                     </span>
                   </a>
-                  <a class="level-item" aria-label="delete" @click="deletePost(index)">
+                  <a class="level-item" aria-label="delete" @click="DeletePost(index)">
                     <span class="icon is-small">
                       <i class="fas fa-trash" aria-hidden="true"></i>
                     </span>

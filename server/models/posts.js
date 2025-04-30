@@ -105,6 +105,7 @@ function mapToDB(item, user) {
     image: item.image,
     email: user.email,
     username: user.username,
+    profile_picture: user.profile_picture,
   };
 }
 
