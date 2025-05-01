@@ -1,33 +1,101 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { addPost, refPost, type Post } from '@/models/post'
+import { create, type Post } from '@/models/posts'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { refSession } from '@/models/session'
+import { getAll as getLastWorkouts, update, create as createWorkout, type Last_Workout } from '@/models/last_workout'
+import { get } from '@/models/users'
 
-const newPost = refPost()
+dayjs.extend(relativeTime)
 
+const session = refSession()
+const curUser = session.value.user
 
-const resetForm = () => {
+const newPost = ref<Partial<Post>>({
+  description: '',
+  exercise: '',
+  equipment: '',
+  duration: 0,
+  sets: 0,
+  reps: 0,
+  image: '',
+})
+
+const lastWorkouts = ref<Last_Workout[]>([])
+
+getLastWorkouts().then((response) => {
+  lastWorkouts.value = response.items
+})
+
+async function createPost() {
+  if (!curUser) {
+    return
+  }
+  const post = {
+    ...newPost.value,
+    user_id: curUser.user_id,
+    username: curUser.username,
+    profile_picture: curUser.profile_picture,
+    email: curUser.email,
+  } as Post
+
+  const response = await create(post)
+
   newPost.value = {
+    description: '',
     exercise: '',
     equipment: '',
     duration: 0,
     sets: 0,
     reps: 0,
-    description: '',
-    timestamp: new Date().toISOString(),
-    image: ''
+    image: '',
   }
 }
 
-const emit = defineEmits(['submit', 'cancel'])
+async function updateLastWorkout(){
 
-const submitForm = () => {
-  emit('submit', newPost.value)
-  resetForm()
+  if (curUser && lastWorkouts.value.find((workout) => workout.user_id === curUser.user_id)) {
+    const lastWorkout = {
+      exercise: newPost.value.exercise,
+      duration: newPost.value.duration,
+      sets: newPost.value.sets,
+      reps: newPost.value.reps,
+      user_id: curUser.user_id,
+    } as Last_Workout
+
+    console.log('Creating new workout:', lastWorkout)
+    const response = await update(lastWorkout)
+    getLastWorkouts().then((response) => {
+      lastWorkouts.value = response.items
+    })
+  } else if (curUser) {
+    const lastWorkout = {
+      exercise: newPost.value.exercise,
+      duration: newPost.value.duration,
+      sets: newPost.value.sets,
+      reps: newPost.value.reps,
+      user_id: curUser.user_id,
+    } as Last_Workout
+
+    console.log('Creating new workout:', lastWorkout)
+    const response = await createWorkout(lastWorkout)
+    getLastWorkouts().then((response) => {
+      lastWorkouts.value = response.items
+    })
+  }
+  
 }
+
+async function submitPost(){
+  await updateLastWorkout()
+  await createPost()
+}
+
 </script>
 
 <template>
-  <form @submit.prevent="submitForm">
+  <form @submit.prevent="submitPost">
     <div class="field">
       <label class="label">Exercise</label>
       <div class="control">
@@ -72,10 +140,7 @@ const submitForm = () => {
     </div>
     <div class="field is-grouped">
       <div class="control">
-        <button class="button is-link" type="submit" @click="addPost(newPost)">Submit</button>
-      </div>
-      <div class="control">
-        <button class="button is-link is-light" type="button" @click="emit('cancel')">Cancel</button>
+        <input class="button is-link" type="submit" id="submit" value="Submit"></input>
       </div>
     </div>
   </form>

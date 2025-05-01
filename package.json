@@ -5,12 +5,19 @@
   "description": "",
   "scripts": {
     "start": "node server/index.js",
-    "dev": "nodemon server/index.js --watch server"
+    "dev": "nodemon server/index.js --watch server --watch client",
+    "build:client": "pnpm run --prefix client build ",
+    "build": "pnpm --prefix client i  && pnpm run build:client",
+    "build:server": "pnpm run build  && pnpm run dev"
   },
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
+    "buefy": "npm:@ntohq/buefy-next@^0.2.0",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "dayjs": "^1.11.13"
+    "postgres": "^3.4.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

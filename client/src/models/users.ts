@@ -1,45 +1,40 @@
-import type { Exercise } from "./exercises"
-import type { Post } from "./post"
-import users from "../data/users.json"
-import exercises from "../data/exercises.json"
-import { ref } from "vue"
+import type { DataListEnvelope } from './dataEnvelopes'
+import { api } from './session'
 
 export interface User {
-  id: number
+  user_id: number
   username: string
-  name: {
-    first: string
-    last: string
-  }
-  email: string
   password: string
+  first: string
+  last: string
+  email: string
   profile_picture: string
-  lastWorkout: {
-    "name": string,
-    "duration": number,
-    "sets": number,
-    "reps": number,
-    "timestamp": string
-  }
-  posts: Post[]
   admin: boolean
 }
-const user = ref<User | null>(null)
 
-const allUsers = ref<User[]>(users.items)
-
-export function refUser() {
-  return user
+export function getAll(): Promise<DataListEnvelope<User>> {
+  return api('users')
 }
 
-export function getAllUsers() {
-  return allUsers
+export function get(id: number): Promise<User> {
+  return api(`users/${id}`)
 }
 
-export function setUser(userId: number) {
-  user.value = users.items.find((item) => item.id == userId) as User
+export function searchUser(
+  search: string,
+  page: number,
+  limit: number,
+): Promise<DataListEnvelope<User>> {
+  return api(`users/search/${search}?page=${page}&limit=${limit}`)
 }
 
-export function getUser(id: number): User {
-  return users.items.find((item) => item.id == id) as User
+export function create(data: User) {
+  return api<User>('users', data)
+}
+export function update(data: User) {
+  return api<User>(`users/${data.user_id}`, data, 'PATCH')
+}
+
+export function remove(user_id: number) {
+  return api<User>(`users/${user_id}`, undefined, 'DELETE')
 }

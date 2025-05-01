@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "user_id": 1,
+      "exercise": "Push-ups",
+      "duration": 30,
+      "reps": 15,
+      "sets": 3
+    },
+    {
+      "user_id": 2,
+      "exercise": "Squats",
+      "duration": 45,
+      "reps": 20,
+      "sets": 3
+    },
+    {
+      "user_id": 3,
+      "exercise": "Deadlifts",
+      "duration": 60,
+      "reps": 10,
+      "sets": 3
+    }
+  ]
+}
