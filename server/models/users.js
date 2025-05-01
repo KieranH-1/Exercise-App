@@ -48,7 +48,7 @@ async function search(
     count,
   } = await BaseQuery()
     .or(
-      `first_name.ilike.%${query}%,last_name.ilike.%${query}%,email.ilike.%${query}%,username.ilike.%${query}%`
+      `first.ilike.%${query}%,last.ilike.%${query}%,email.ilike.%${query}%,username.ilike.%${query}%`
     )
     .order(sort, { ascending: order === "asc" })
     .range(offset, offset + limit - 1);
@@ -78,7 +78,7 @@ async function create(item) {
   return newItem;
 }
 
-async function update(id, item) {
+async function update(user_id, item) {
   if (!isAdmin) {
     throw CustomError(
       "Sorry, you are not authorized to update this item",
@@ -88,7 +88,7 @@ async function update(id, item) {
   const { data: updatedItem, error } = await connect()
     .from(TABLE_NAME)
     .update(item)
-    .eq("user_id", id)
+    .eq("user_id", user_id)
     .select("*");
   if (error) {
     throw error;
@@ -106,7 +106,7 @@ async function remove(id) {
   const { data: deletedItem, error } = await connect()
     .from(TABLE_NAME)
     .delete()
-    .eq("post_id", id);
+    .eq("user_id", id);
   if (error) {
     throw error;
   }
@@ -129,9 +129,9 @@ async function seed() {
 
 function mapToDB(item) {
   return {
-    user_id: item.id,
-    first_name: item.first,
-    last_name: item.last,
+    id: item.user_id, // Ensure this maps correctly
+    first: item.first,
+    last: item.last,
     email: item.email,
     username: item.username,
     password: item.password,

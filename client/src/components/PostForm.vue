@@ -1,32 +1,61 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { addPost, refPost, type Post } from '@/models/posts'
+import { create, type Post } from '@/models/posts'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { refSession } from '@/models/session'
 
-const newPost = refPost()
+dayjs.extend(relativeTime)
 
-const resetForm = () => {
+const session = refSession()
+const curUser = session.value.user
+
+const newPost = ref<Partial<Post>>({
+  description: '',
+  exercise: '',
+  equipment: '',
+  duration: 0,
+  sets: 0,
+  reps: 0,
+  image: '',
+})
+
+async function createPost() {
+  if (!curUser) {
+    return
+  }
+  const post = {
+    ...newPost.value,
+    user_id: curUser.user_id,
+    username: curUser.username,
+    profile_picture: curUser.profile_picture,
+    email: curUser.email,
+  } as Post
+
+  const response = await create(post)
+
   newPost.value = {
+    description: '',
     exercise: '',
     equipment: '',
     duration: 0,
     sets: 0,
     reps: 0,
-    description: '',
-    timestamp: new Date().toISOString(),
     image: '',
   }
 }
 
-const emit = defineEmits(['submit', 'cancel'])
+async function updateLatestWorkout(){
+  
+}
 
-const submitForm = () => {
-  emit('submit', newPost.value)
-  resetForm()
+async function submitPost(){
+  await createPost()
 }
 </script>
 
 <template>
-  <form @submit.prevent="submitForm">
+  <form @submit.prevent="submitPost">
     <div class="field">
       <label class="label">Exercise</label>
       <div class="control">
@@ -71,12 +100,7 @@ const submitForm = () => {
     </div>
     <div class="field is-grouped">
       <div class="control">
-        <button class="button is-link" type="submit" @click="addPost(newPost)">Submit</button>
-      </div>
-      <div class="control">
-        <button class="button is-link is-light" type="button" @click="emit('cancel')">
-          Cancel
-        </button>
+        <input class="button is-link" type="submit" id="submit" value="Submit"></input>
       </div>
     </div>
   </form>

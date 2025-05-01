@@ -1,4 +1,35 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { DataListEnvelope } from '@/models/dataEnvelopes'
+import { login } from '@/models/session'
+import { getAll, type User } from '@/models/users'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { ref } from 'vue'
+
+dayjs.extend(relativeTime)
+
+const users = ref({} as DataListEnvelope<User>)
+
+const newUser = ref<Partial<User>>({
+  username: '',
+  password: '',
+})
+
+getAll().then((response) => {
+  users.value = response
+})
+
+async function changeUser() {
+  const user = users.value.items.find((user) => user.username === newUser.value.username)
+  if (user && user.password === newUser.value.password) {
+    login(user.user_id)
+  }
+}
+
+async function loginSubmit() {
+  await changeUser()
+}
+</script>
 
 <template>
   <main class="container">
@@ -6,18 +37,28 @@
       <div class="column is-half">
         <div class="box">
           <h1 class="title">Login</h1>
-          <form>
+          <form @submit.prevent="loginSubmit()">
             <div class="field">
               <label class="label">Username</label>
               <div class="control">
-                <input class="input" type="text" placeholder="Enter your username" />
+                <input
+                  class="input"
+                  type="text"
+                  placeholder="Username"
+                  v-model="newUser.username"
+                />
               </div>
             </div>
 
             <div class="field">
               <label class="label">Password</label>
               <div class="control">
-                <input class="input" type="password" placeholder="Enter your password" />
+                <input
+                  class="input"
+                  type="password"
+                  placeholder="Password"
+                  v-model="newUser.password"
+                />
               </div>
             </div>
 

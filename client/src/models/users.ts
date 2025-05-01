@@ -2,7 +2,7 @@ import type { DataListEnvelope } from './dataEnvelopes'
 import { api } from './session'
 
 export interface User {
-  id: number
+  user_id: number
   username: string
   password: string
   first: string
@@ -26,4 +26,15 @@ export function searchUser(
   limit: number,
 ): Promise<DataListEnvelope<User>> {
   return api(`users/search/${search}?page=${page}&limit=${limit}`)
+}
+
+export function create(data: User) {
+  return api<User>('users', data)
+}
+export function update(data: User) {
+  return api<User>(`users/${data.user_id}`, data, 'PATCH')
+}
+
+export function remove(user_id: number) {
+  return api<User>(`users/${user_id}`, undefined, 'DELETE')
 }

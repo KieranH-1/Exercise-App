@@ -1,30 +1,46 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { get, type Last_Workout } from '@/models/last_workout'
+import { isLoggedIn, refSession } from '@/models/session'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { ref } from 'vue'
+
+dayjs.extend(relativeTime)
+
+const session = refSession()
+
+const workout = ref({} as Last_Workout)
+
+if (session.value.user) {
+  get(session.value.user.user_id).then((response) => {
+    workout.value = response.items[0]
+  })
+}
+</script>
 <template>
   <div class="stats">
     <h1 class="title is-3"><b>Last Workout</b></h1>
 
-    <div class="box">
-      <div class="workout-details">
-        <div class="workout-item">
-          <p>EXERCISE</p>
-          <h1>{{ user?.lastWorkout.name }}</h1>
-        </div>
-        <div class="workout-item">
-          <p>DURATION</p>
-          <h1>{{ user?.lastWorkout.duration }} minutes</h1>
-        </div>
-        <div v-if="user?.lastWorkout.sets" class="workout-item">
-          <p>SETS</p>
-          <h1>{{ user?.lastWorkout.sets }}</h1>
-        </div>
-        <div v-if="user?.lastWorkout.reps" class="workout-item">
-          <p>REPS</p>
-          <h1>{{ user?.lastWorkout.reps }}</h1>
-        </div>
-        <div class="workout-item">
-          <p>DATE</p>
-          <h1>{{ user?.lastWorkout.timestamp }}</h1>
-        </div>
+    <div class="box" v-if="isLoggedIn()">
+      <div class="workout-item">
+        <p>EXERCISE</p>
+        <h1>{{ workout?.exercise }}</h1>
+      </div>
+      <div class="workout-item">
+        <p>DURATION</p>
+        <h1>{{ workout?.duration }} minutes</h1>
+      </div>
+      <div v-if="workout?.sets" class="workout-item">
+        <p>SETS</p>
+        <h1>{{ workout.sets }}</h1>
+      </div>
+      <div v-if="workout?.reps" class="workout-item">
+        <p>REPS</p>
+        <h1>{{ workout.reps }}</h1>
+      </div>
+      <div class="workout-item">
+        <p>DATE</p>
+        <h1>{{ workout?.created_at }}</h1>
       </div>
     </div>
   </div>

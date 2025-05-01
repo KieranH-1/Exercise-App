@@ -1,16 +1,9 @@
 <!-- eslint-disable vue/no-export-in-script-setup -->
 <script setup lang="ts">
-import { refUser, setUser } from '@/models/users'
-import { ref, defineEmits } from 'vue'
-
-const emit = defineEmits(['select-profile'])
+import LoginBadge from './LoginBadge.vue'
+import { ref } from 'vue'
 
 const isActive = ref(false)
-const toggleLogin = ref(false)
-
-// Add user data
-const user = refUser()
-
 </script>
 
 <template>
@@ -52,51 +45,17 @@ const user = refUser()
 
       <div class="navbar-menu" :class="{ 'is-active': isActive }">
         <div class="navbar-start">
-          <RouterLink to="/" class="navbar-item"> <span class="icon is-small"><i class="fas fa-dumbbell"></i></span>
-            My Activity</RouterLink>
-          <RouterLink to="/friends" class="navbar-item"><span class="icon is-small"><i class="fas fa-users"></i></span>Friends</RouterLink>
+          <RouterLink to="/" class="navbar-item">
+            <span class="icon is-small"><i class="fas fa-dumbbell"></i></span> My
+            Activity</RouterLink
+          >
+          <RouterLink to="/friends" class="navbar-item"
+            ><span class="icon is-small"><i class="fas fa-users"></i></span>Friends</RouterLink
+          >
         </div>
 
         <div class="navbar-end">
-          <!-- Move user profile display here -->
-          <div class="navbar-item" v-if="user">
-            <figure class="image is-32x32">
-              <img class="is-rounded" :src="user?.profile_picture" alt="Profile Picture">
-            </figure>
-            <span>{{ user?.username }}</span>
-          </div>
-          <div class="navbar-item">
-            <div class="buttons">
-              <a v-if="!user" class="button is-primary">
-                <strong>Sign up</strong>
-              </a>
-              <div class="dropdown is-right" :class="{ 'is-active': toggleLogin }">
-                <div class="dropdown-trigger">
-                  <button class="button is-light" @click="toggleLogin = !toggleLogin">
-                    <span>Log in</span>
-                    <span class="icon is- is-right">
-                      <i class="fas fa-angle-down" aria-hidden="true"></i>
-                    </span>
-                  </button>
-                </div>
-                <div class="dropdown-menu" id="dropdown-menu2" role="menu">
-                  <div class="dropdown-content">
-                    <a class="dropdown-item" @click="setUser(1); toggleLogin = !toggleLogin">johnny_runner</a>
-                    <a class="dropdown-item" @click="setUser(2); toggleLogin = !toggleLogin">jane_yogi</a>
-                    <a class="dropdown-item" @click="setUser(3); toggleLogin = !toggleLogin">alice_fitness</a>
-                    <hr class="dropdown-divider" />
-                    <RouterLink to="/login" class="navbar-item">Other Account</RouterLink>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Add admin button -->
-          <div class="navbar-item" v-if="user?.admin">
-            <RouterLink to="/admin" class="button is-danger">
-              Admin
-            </RouterLink>
-          </div>
+          <LoginBadge />
         </div>
       </div>
     </div>

@@ -6,21 +6,20 @@ const TABLE_NAME = "last_workout";
 
 const isAdmin = true;
 
-async function get(id) {
-  const { data: item, error } = await connect()
+async function get(id, limit = 30, offset = 0) {
+  const list = await connect()
     .from(TABLE_NAME)
     .select("*")
-    .eq("user_id", id);
-  console.log(item);
-  if (!item.length) {
-    throw new CustomError("Item not found", statusCodes.NOT_FOUND);
+    .range(offset, offset + limit - 1)
+    .eq("user_id", id); // 0 based index but range is inclusive
+  if (list.error) {
+    throw list.error;
   }
-  if (error) {
-    throw error;
-  }
-  return item;
+  return {
+    items: list.data,
+    total: list.count,
+  };
 }
-
 async function create(item) {
   if (!isAdmin) {
     throw CustomError(
@@ -38,7 +37,7 @@ async function create(item) {
   return newItem;
 }
 
-async function update(id, item) {
+async function update(user_id, item) {
   if (!isAdmin) {
     throw CustomError(
       "Sorry, you are not authorized to update this item",
@@ -48,7 +47,7 @@ async function update(id, item) {
   const { data: updatedItem, error } = await connect()
     .from(TABLE_NAME)
     .update(item)
-    .eq("user_id", id)
+    .eq("user_id", user_id)
     .select("*");
   if (error) {
     throw error;
@@ -62,7 +61,7 @@ async function seed() {
   for (const item of data.items) {
     const user = users[i];
     i++;
-    const insert = mapToDB(item, user);
+    const insert = mapToDB(item, user.user_id);
     const { data: newItem, error } = await connect()
       .from(TABLE_NAME)
       .insert(insert)
@@ -74,9 +73,9 @@ async function seed() {
   return { message: "Seeded successfully" };
 }
 
-function mapToDB(item, user) {
+function mapToDB(item, user_id) {
   return {
-    user_id: user.id,
+    user_id: user_id,
     exercise: item.exercise,
     duration: item.duration,
     sets: item.sets,

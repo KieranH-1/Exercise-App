@@ -1,69 +1,32 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { getAll, type Post } from '@/models/posts'
+import { get, remove, type Post } from '@/models/posts'
 import { type DataListEnvelope } from '@/models/dataEnvelopes'
 import PostForm from '../components/PostForm.vue' // Import the PostForm component
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useRoute } from 'vue-router'
-import { refSession } from '@/models/session'
+import { isLoggedIn, refSession } from '@/models/session'
 
 dayjs.extend(relativeTime)
 
 const showForm = ref(false)
 
-const route = useRoute('/posts/[id]')
 const posts = ref({} as DataListEnvelope<Post>)
-
-const newPost = ref<Partial<Post>>({
-  description: '',
-  exercise: '',
-  equipment: '',
-  duration: 0,
-  sets: 0,
-  reps: 0,
-  image: '',
-})
-
 const session = refSession()
 
-getAll().then((response) => {
-  posts.value = response
-})
-
-async function SubmitPost() {
-  const curUser = session.value.user
-
-  if (!curUser) {
-    return
-  }
-
-  const post = {
-    ...newPost.value,
-    user: curUser,
-    created_at: new Date().toLocaleDateString(),
-    username: curUser.username,
-    profile_picture: curUser.profile_picture,
-    email: curUser.email,
-  } as Post
-
-  newPost.value = {
-    description: '',
-    exercise: '',
-    equipment: '',
-    duration: 0,
-    sets: 0,
-    reps: 0,
-    image: '',
-  }
+if (session.value.user) {
+  get(session.value.user.user_id).then((response) => {
+    posts.value = response
+  })
 }
 
-async function DeletePost(index: number) {
-  const post_id = posts.value.items[index].id
-  await fetch(`http://localhost:3000/posts/${post_id}`, {
-    method: 'DELETE',
-  })
-  posts.value.items.splice(index, 1)
+async function deletePost(post_id: number) {
+  const response = await remove(post_id)
+  posts.value?.items.splice(
+    posts.value.items.findIndex((post) => post.post_id === post_id),
+    1,
+  )
 }
 </script>
 
@@ -79,84 +42,84 @@ async function DeletePost(index: number) {
           <button class="delete" aria-label="close" @click="showForm = false"></button>
         </header>
         <section class="modal-card-body">
-          <PostForm @submit="Post(newPost)" @cancel="showForm = false" />
+          <PostForm @cancel="showForm = false" />
           <!-- Use the PostForm component -->
         </section>
       </div>
     </div>
-    <ul>
-      <li v-for="(post, index) in posts" :key="index">
-        <div class="box">
-          <article class="media">
-            <div class="media-left">
-              <figure class="image is-64x64 is-square">
-                <img class="is-rounded" :src="user?.profile_picture" alt="Profile Picture" />
-              </figure>
-            </div>
-            <div class="media-content">
-              <div class="content">
-                <p>
-                  <strong v-if="user">{{ user.name.first }} &nbsp; {{ user.name.last }}</strong>
-                  &nbsp; <small v-if="user">@{{ user.email }}</small> &nbsp;
-                  <small>{{ post.timestamp }}</small>
-                  <br />
-                </p>
-                <h4>{{ post.description }}</h4>
-                <div class="post-details">
-                  <div>
-                    <p>EXERCISE</p>
-                    <h1>{{ post.exercise }}</h1>
-                  </div>
-                  <div>
-                    <p>EQUIPMENT</p>
-                    <h1>{{ post.equipment }}</h1>
-                  </div>
-                  <div>
-                    <p>DURATION</p>
-                    <h1>{{ post.duration }} minutes</h1>
-                  </div>
-                  <div v-if="post.sets">
-                    <p>SETS</p>
-                    <h1>{{ post.sets }}</h1>
-                  </div>
-                  <div v-if="post.reps">
-                    <p>REPS</p>
-                    <h1>{{ post.reps }}</h1>
-                  </div>
-                  <figure>
-                    <img :src="post.image ?? ''" alt="Post Image" />
-                  </figure>
-                </div>
+    <div>
+      <ul>
+        <li v-for="(post, index) in posts.items" :key="index">
+          <div class="box">
+            <article class="media">
+              <div class="media-left">
+                <figure class="image is-64x64 is-square">
+                  <img class="is-rounded" :src="post.profile_picture" alt="Profile Picture" />
+                </figure>
               </div>
-              <nav class="level is-mobile">
-                <div class="level-left">
-                  <a class="level-item" aria-label="reply">
-                    <span class="icon is-small">
-                      <i class="fas fa-reply" aria-hidden="true"></i>
-                    </span>
-                  </a>
-                  <a class="level-item" aria-label="retweet">
-                    <span class="icon is-small">
-                      <i class="fas fa-retweet" aria-hidden="true"></i>
-                    </span>
-                  </a>
-                  <a class="level-item" aria-label="like">
-                    <span class="icon is-small">
-                      <i class="fas fa-heart" aria-hidden="true"></i>
-                    </span>
-                  </a>
-                  <a class="level-item" aria-label="delete" @click="DeletePost(index)">
-                    <span class="icon is-small">
-                      <i class="fas fa-trash" aria-hidden="true"></i>
-                    </span>
-                  </a>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong>{{ post.username }}</strong>
+                    &nbsp; <small>@{{ post.email }}</small> &nbsp;
+                    <small>{{ post.created_at }}</small>
+                    <br />
+                  </p>
+                  <h4>{{ post.description }}</h4>
+                  <div class="post-details">
+                    <div>
+                      <p>EXERCISE</p>
+                      <h1>{{ post.exercise }}</h1>
+                    </div>
+                    <div>
+                      <p>EQUIPMENT</p>
+                      <h1>{{ post.equipment }}</h1>
+                    </div>
+                    <div>
+                      <p>DURATION</p>
+                      <h1>{{ post.duration }} minutes</h1>
+                    </div>
+                    <div v-if="post.sets">
+                      <p>SETS</p>
+                      <h1>{{ post.sets }}</h1>
+                    </div>
+                    <div v-if="post.reps">
+                      <p>REPS</p>
+                      <h1>{{ post.reps }}</h1>
+                    </div>
+                    <img :src="post.image ?? ''" alt="Post Image" />
+                  </div>
                 </div>
-              </nav>
-            </div>
-          </article>
-        </div>
-      </li>
-    </ul>
+                <nav class="level is-mobile">
+                  <div class="level-left">
+                    <a class="level-item" aria-label="reply">
+                      <span class="icon is-small">
+                        <i class="fas fa-reply" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                    <a class="level-item" aria-label="retweet">
+                      <span class="icon is-small">
+                        <i class="fas fa-retweet" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                    <a class="level-item" aria-label="like">
+                      <span class="icon is-small">
+                        <i class="fas fa-heart" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                    <a class="level-item" aria-label="delete" @click="deletePost(post.post_id)">
+                      <span class="icon is-small">
+                        <i class="fas fa-trash" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                  </div>
+                </nav>
+              </div>
+            </article>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 

@@ -26,18 +26,24 @@ async function getAll(
   };
 }
 
-async function get(id) {
-  const { data: item, error } = await connect()
-    .from(TABLE_NAME)
-    .select("*")
-    .eq("user_id", id);
-  if (!item.length) {
-    throw new CustomError("Item not found", statusCodes.NOT_FOUND);
+async function get(
+  id,
+  limit = 30,
+  offset = 0,
+  sort = "created_at",
+  order = "asc"
+) {
+  const list = await BaseQuery()
+    .order(sort, { ascending: order === "asc" })
+    .range(offset, offset + limit - 1)
+    .eq("user_id", id); // 0 based index but range is inclusive
+  if (list.error) {
+    throw list.error;
   }
-  if (error) {
-    throw error;
-  }
-  return item;
+  return {
+    items: list.data,
+    total: list.count,
+  };
 }
 
 async function create(item) {
@@ -57,17 +63,22 @@ async function create(item) {
   return newItem;
 }
 
-async function remove(id) {
+async function remove(post_id) {
   if (!isAdmin) {
     throw CustomError(
       "Sorry, you are not authorized to delete this item",
       statusCodes.UNAUTHORIZED
     );
   }
+
+  console.log("Deleting post with ID:", post_id);
   const { data: deletedItem, error } = await connect()
     .from(TABLE_NAME)
     .delete()
-    .eq("post_id", id);
+    .eq("post_id", post_id)
+    .select("*"); // Select the deleted item to return it
+
+  console.log(data);
   if (error) {
     throw error;
   }
@@ -81,7 +92,7 @@ async function seed() {
     const randomIndex = Math.floor(Math.random() * users.length);
     const randomUser = users[randomIndex];
 
-    const insert = mapToDB(item, randomUser);
+    const insert = mapToDB(item, randomUser.user_id);
     const { data: newItem, error } = await connect()
       .from(TABLE_NAME)
       .insert(insert)
@@ -93,9 +104,9 @@ async function seed() {
   return { message: "Seeded successfully" };
 }
 
-function mapToDB(item, user) {
+function mapToDB(item, user_id) {
   return {
-    user_id: user.id,
+    user_id: user_id,
     description: item.description,
     exercise: item.exercise,
     equipment: item.equipment,
@@ -103,9 +114,9 @@ function mapToDB(item, user) {
     sets: item.sets,
     reps: item.reps,
     image: item.image,
-    email: user.email,
-    username: user.username,
-    profile_picture: user.profile_picture,
+    email: item.email,
+    username: item.username,
+    profile_picture: item.profile_picture,
   };
 }
 

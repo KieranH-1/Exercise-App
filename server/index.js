@@ -1,6 +1,3 @@
-/*  B"H
- */
-// Load the http module to create an http server.
 const express = require("express");
 const postsController = require("./controllers/posts");
 const usersController = require("./controllers/users");
