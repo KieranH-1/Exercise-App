@@ -6,6 +6,20 @@ const TABLE_NAME = "last_workout";
 
 const isAdmin = true;
 
+async function getAll(limit = 30, offset = 0, sort = "user_id", order = "asc") {
+  const list = await connect()
+    .from(TABLE_NAME)
+    .select("*")
+    .order(sort, { ascending: order === "asc" })
+    .range(offset, offset + limit - 1); // 0 based index but range is inclusive
+  if (list.error) {
+    throw list.error;
+  }
+  return {
+    items: list.data,
+    total: list.count,
+  };
+}
 async function get(id, limit = 30, offset = 0) {
   const list = await connect()
     .from(TABLE_NAME)
@@ -84,6 +98,7 @@ function mapToDB(item, user_id) {
 }
 
 module.exports = {
+  getAll,
   get,
   update,
   create,

@@ -70,8 +70,6 @@ async function remove(post_id) {
       statusCodes.UNAUTHORIZED
     );
   }
-
-  console.log("Deleting post with ID:", post_id);
   const { data: deletedItem, error } = await connect()
     .from(TABLE_NAME)
     .delete()

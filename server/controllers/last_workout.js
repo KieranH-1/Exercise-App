@@ -3,6 +3,16 @@ const express = require("express");
 const router = express.Router();
 
 router
+  .get("/", (req, res, next) => {
+    const { limit, offset, sort, order } = req.query;
+
+    model
+      .getAll(num(limit), num(offset), sort, order)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch(next);
+  })
   .get("/:id", (req, res, next) => {
     const { id } = req.params;
 
@@ -21,6 +31,16 @@ router
       .update(id, newValues)
       .then((data) => {
         res.send(data);
+      })
+      .catch(next);
+  })
+  .post("/", (req, res, next) => {
+    const newValues = req.body;
+
+    model
+      .create(newValues)
+      .then((data) => {
+        res.status(201).send(data);
       })
       .catch(next);
   })

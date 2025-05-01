@@ -4,6 +4,8 @@ import { create, type Post } from '@/models/posts'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { refSession } from '@/models/session'
+import { getAll as getLastWorkouts, update, create as createWorkout, type Last_Workout } from '@/models/last_workout'
+import { get } from '@/models/users'
 
 dayjs.extend(relativeTime)
 
@@ -18,6 +20,12 @@ const newPost = ref<Partial<Post>>({
   sets: 0,
   reps: 0,
   image: '',
+})
+
+const lastWorkouts = ref<Last_Workout[]>([])
+
+getLastWorkouts().then((response) => {
+  lastWorkouts.value = response.items
 })
 
 async function createPost() {
@@ -45,13 +53,45 @@ async function createPost() {
   }
 }
 
-async function updateLatestWorkout(){
+async function updateLastWorkout(){
+
+  if (curUser && lastWorkouts.value.find((workout) => workout.user_id === curUser.user_id)) {
+    const lastWorkout = {
+      exercise: newPost.value.exercise,
+      duration: newPost.value.duration,
+      sets: newPost.value.sets,
+      reps: newPost.value.reps,
+      user_id: curUser.user_id,
+    } as Last_Workout
+
+    console.log('Creating new workout:', lastWorkout)
+    const response = await update(lastWorkout)
+    getLastWorkouts().then((response) => {
+      lastWorkouts.value = response.items
+    })
+  } else if (curUser) {
+    const lastWorkout = {
+      exercise: newPost.value.exercise,
+      duration: newPost.value.duration,
+      sets: newPost.value.sets,
+      reps: newPost.value.reps,
+      user_id: curUser.user_id,
+    } as Last_Workout
+
+    console.log('Creating new workout:', lastWorkout)
+    const response = await createWorkout(lastWorkout)
+    getLastWorkouts().then((response) => {
+      lastWorkouts.value = response.items
+    })
+  }
   
 }
 
 async function submitPost(){
+  await updateLastWorkout()
   await createPost()
 }
+
 </script>
 
 <template>
