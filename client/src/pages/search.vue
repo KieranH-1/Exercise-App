@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { DataListEnvelope } from '@/models/dataEnvelopes'
 import { type User, getAll } from '@/models/users'
 
 const users = ref({} as DataListEnvelope<User>)
-const user = ref('')
+const user = ref<string | null>(null)
 
 getAll().then((response) => {
   users.value = response
 })
+
+// Find the selected user object by username
+const selectedUser = computed(
+  () => users.value.items?.find((u) => u.username === user.value) ?? null,
+)
 </script>
 
 <template>
@@ -17,7 +22,7 @@ getAll().then((response) => {
       <o-field label="Search for Users">
         <o-autocomplete
           v-model="user"
-          :options="users.items.map((user) => user.username)"
+          :options="users.items.map((user) => user.username) || []"
           rounded
           expanded
           placeholder="e.g. jQuery"
@@ -27,13 +32,32 @@ getAll().then((response) => {
         >
         </o-autocomplete>
 
-        <p><b>Selected:</b> {{ user }}</p>
+        <div v-if="selectedUser">
+          <p><b>Selected User:</b></p>
+          <ul>
+            <li><b>Username:</b> {{ selectedUser.username }}</li>
+            <li><b>Email:</b> {{ selectedUser.email }}</li>
+            <li v-if="selectedUser.first">
+              <b>Name:</b> {{ selectedUser.first }} {{ selectedUser.last }}
+            </li>
+          </ul>
+        </div>
+        <div v-else>
+          <p><b>No user selected.</b></p>
+        </div>
       </o-field>
     </section>
   </div>
 </template>
 
 <style scoped>
+o-field,
+.odocs-spaced {
+  width: auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .search-page {
   max-width: 400px;
   margin: 2rem auto;
