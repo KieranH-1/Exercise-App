@@ -2,6 +2,8 @@ This is a full stack exercise tracking website where users can post their workou
 
 The database that is used is supabase.
 
+**Switch between pages to update the app**
+
 Website Link: https://exercise-app-dyanmic.onrender.com
 
 Render may take a few seconds to load. 
