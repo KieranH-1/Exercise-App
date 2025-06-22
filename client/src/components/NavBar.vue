@@ -52,6 +52,10 @@ const isActive = ref(false)
           <RouterLink to="/friends" class="navbar-item"
             ><span class="icon is-small"><i class="fas fa-users"></i></span>Friends</RouterLink
           >
+          <RouterLink to="/search" class="navbar-item"
+            ><span class="icon is-small"><i class="fas fa-magnifying-glass"></i></span
+            >Search</RouterLink
+          >
         </div>
 
         <div class="navbar-end">

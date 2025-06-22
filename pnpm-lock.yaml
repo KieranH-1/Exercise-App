@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@oruga-ui/oruga-next':
+        specifier: ^0.10.5
+        version: 0.10.5(vue@3.5.13)
       '@supabase/supabase-js':
         specifier: ^2.49.4
         version: 2.49.4
@@ -55,6 +58,11 @@ packages:
 
   '@ntohq/buefy-next@0.2.0':
     resolution: {integrity: sha512-I8/8eM2eOxZCl5igqYn274fpbgpJEPWGULvVDOXdT2WOaiWA8AHQPsT9WfknW3DENuYEWyMzKTyVI74R/Yl3BA==}
+    peerDependencies:
+      vue: ^3.0.0
+
+  '@oruga-ui/oruga-next@0.10.5':
+    resolution: {integrity: sha512-unxjOBM70sHo0uZnWheF9eT2vAI23rRU2Fg4MTxzibWx9Ku1hax3xL9HSO8gneNG8nikN/BJncX1lE+yy93rtg==}
     peerDependencies:
       vue: ^3.0.0
 
@@ -554,6 +562,9 @@ packages:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
 
+  vue-component-type-helpers@2.2.10:
+    resolution: {integrity: sha512-iDUO7uQK+Sab2tYuiP9D1oLujCWlhHELHMgV/cB13cuGbG4qwkLHvtfWb6FzvxrIOPDnU0oHsz2MlQjhYDeaHA==}
+
   vue@3.5.13:
     resolution: {integrity: sha512-wmeiSMxkZCSc+PM2w2VRsOYAZC8GdipNFRTsLSfodVqI9mbejKeXEGr8SckuLnrQPGe3oJN5c3K0vpoU9q/wCQ==}
     peerDependencies:
@@ -602,6 +613,11 @@ snapshots:
       vue: 3.5.13
     optionalDependencies:
       '@rollup/rollup-linux-x64-gnu': 4.6.1
+
+  '@oruga-ui/oruga-next@0.10.5(vue@3.5.13)':
+    dependencies:
+      vue: 3.5.13
+      vue-component-type-helpers: 2.2.10
 
   '@rollup/rollup-linux-x64-gnu@4.6.1':
     optional: true
@@ -1153,6 +1169,8 @@ snapshots:
   utils-merge@1.0.1: {}
 
   vary@1.1.2: {}
+
+  vue-component-type-helpers@2.2.10: {}
 
   vue@3.5.13:
     dependencies:
