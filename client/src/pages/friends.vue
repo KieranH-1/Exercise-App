@@ -5,8 +5,6 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { ref } from 'vue'
 
-dayjs.extend(relativeTime)
-
 const posts = ref({} as DataListEnvelope<Post>)
 
 getAll().then((response) => {

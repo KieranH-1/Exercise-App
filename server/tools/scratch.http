@@ -19,8 +19,8 @@ PATCH http://localhost:4000/api/v1/users/1
 Content-Type: application/json
 
 {
-    "first_name": "Jane",
-    "last_name": "Doe",
+    "first": "Jane",
+    "last": "Doe",
     "email": "jane.doe@email.com",
     "password": "password123"
 }

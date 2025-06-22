@@ -35,12 +35,6 @@ async function get(id, limit = 30, offset = 0) {
   };
 }
 async function create(item) {
-  if (!isAdmin) {
-    throw CustomError(
-      "Sorry, you are not authorized to create a new item",
-      statusCodes.UNAUTHORIZED
-    );
-  }
   const { data: newItem, error } = await connect()
     .from(TABLE_NAME)
     .insert(item)
